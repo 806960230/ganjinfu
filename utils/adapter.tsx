@@ -20,7 +20,7 @@ class ChainRegistryClientDataSource implements DataSourceProvider {
     private client: ChainRegistryClient;
 
     constructor(searchType: SearchType, query: Query) {
-        if (!query) {
+        if(!query) {
             throw new Error('please set the chainName you want to query')
         }
         this.client = new ChainRegistryClient(query);
@@ -83,7 +83,7 @@ export class DataSourceAdapter {
         // console.log('ibc', ibc)
         this.searchType = config.searchType;
         if (config.dataSourceType === 'chain-registry') {
-            this.dataSource = new ChainRegistryDataSource(config.searchType);
+            this.dataSource = new ChainRegistryDataSource(config.searchType);    
         } else if (config.dataSourceType === '@chain-registry/client') {
             this.dataSource = new ChainRegistryClientDataSource(config.searchType, config.query);
         } else {
