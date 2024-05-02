@@ -4,6 +4,7 @@ import "@interchain-ui/react/styles";
 import type { AppProps } from "next/app";
 import { SignerOptions, wallets } from "cosmos-kit";
 import { ChainProvider } from "@cosmos-kit/react";
+import { Provider } from 'react-redux';
 import { assets, chains } from "chain-registry";
 import {
   Box,
@@ -11,6 +12,8 @@ import {
   useColorModeValue,
   useTheme,
 } from "@interchain-ui/react";
+import rootStore from "@/redux/store";
+import { PersistGate } from "redux-persist/integration/react";
 
 function CreateCosmosApp({ Component, pageProps }: AppProps) {
   const { themeClass } = useTheme();
@@ -23,35 +26,41 @@ function CreateCosmosApp({ Component, pageProps }: AppProps) {
 
   return (
     <ThemeProvider>
-      <ChainProvider
-        chains={chains}
-        assetLists={assets}
-        wallets={wallets}
-        walletConnectOptions={{
-          signClient: {
-            projectId: "a8510432ebb71e6948cfd6cde54b70f7",
-            relayUrl: "wss://relay.walletconnect.org",
-            metadata: {
-              name: "CosmosKit Template",
-              description: "CosmosKit dapp template",
-              url: "https://docs.cosmology.zone/cosmos-kit/",
-              icons: [],
-            },
-          },
-        }}
-        // @ts-ignore
-        signerOptions={signerOptions}
-      >
-        <Box
-          className={themeClass}
-          minHeight="100dvh"
-          backgroundColor={useColorModeValue("$white", "$background")}
-        >
-          {/* TODO fix type error */}
-          {/* @ts-ignore */}
-          <Component {...pageProps} />
-        </Box>
-      </ChainProvider>
+      <Provider store={rootStore.store}>
+        <PersistGate persistor={rootStore.persistor}>
+          <ChainProvider
+            chains={chains}
+            assetLists={assets}
+            wallets={wallets}
+            walletConnectOptions={{
+              signClient: {
+                projectId: "a8510432ebb71e6948cfd6cde54b70f7",
+                relayUrl: "wss://relay.walletconnect.org",
+                metadata: {
+                  name: "CosmosKit Template",
+                  description: "CosmosKit dapp template",
+                  url: "https://docs.cosmology.zone/cosmos-kit/",
+                  icons: [],
+                },
+              },
+            }}
+            // @ts-ignore
+            signerOptions={signerOptions}
+          >
+            <Box
+              className={themeClass}
+              minHeight="100dvh"
+              backgroundColor={useColorModeValue("$white", "$background")}
+            >
+              {/* TODO fix type error */}
+              {/* @ts-ignore */}
+              <Component {...pageProps} />
+            </Box>
+          </ChainProvider>
+        </PersistGate>
+
+      </Provider>
+
     </ThemeProvider>
   );
 }
