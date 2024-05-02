@@ -15,7 +15,7 @@ export type Query = {
     chainNames: string[]
 } | null
 
-
+//
 class ChainRegistryClientDataSource implements DataSourceProvider {
     private client: ChainRegistryClient;
 
